@@ -1,0 +1,7 @@
+python -m venv venv
+venv/scripts/activate
+
+docker-compose up --build
+
+alemic revision --autogenerate -m "v1"
+alembic upgade head

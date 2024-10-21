@@ -7,6 +7,7 @@ class Experiment(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     theme_id = Column(Integer, ForeignKey('themes.id'))
+    creator_id = Column(Integer, ForeignKey('users.id'))
     title = Column(String)
     description = Column(Text)
     parameters = Column(JSON)

@@ -7,10 +7,12 @@ class Theme(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     course_id = Column(Integer, ForeignKey('courses.id'))
+    creator_id = Column(Integer, ForeignKey('users.id'))
     title = Column(String)
+    description = Column(Text)
     content = Column(Text)
     updated_at = Column(TIMESTAMP, nullable=False)
 
     course = relationship('Course', back_populates='themes')
-    owner = relationship('User', back_populates='themes')
+    creator = relationship('User', back_populates='themes')
     experiments = relationship('Experiment', back_populates='theme')

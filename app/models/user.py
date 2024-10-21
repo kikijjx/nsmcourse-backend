@@ -12,5 +12,5 @@ class User(Base):
     created_at = Column(TIMESTAMP, nullable=False)
     updated_at = Column(TIMESTAMP, nullable=False)
 
-    themes = relationship('Theme', back_populates='owner')
+    themes = relationship('Theme', back_populates='creator')
     experiments = relationship('Experiment', back_populates='creator')

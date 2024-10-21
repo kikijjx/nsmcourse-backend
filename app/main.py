@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.routers.user import user_router
+from app.routers.theme import theme_router
 
 from starlette.middleware.cors import CORSMiddleware
 
@@ -12,4 +12,4 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(user_router)
+app.include_router(theme_router)
