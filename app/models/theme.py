@@ -10,7 +10,7 @@ class Theme(Base):
     creator_id = Column(Integer, ForeignKey('users.id'))
     title = Column(String)
     description = Column(Text)
-    content = Column(Text)
+    content = Column(JSON)
     updated_at = Column(TIMESTAMP, nullable=False)
 
     course = relationship('Course', back_populates='themes')
