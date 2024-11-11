@@ -7,6 +7,3 @@ class ExperimentCreateUpdate(BaseModel):
     title: str = Field(..., max_length=255)
     description: str
     parameters: dict
-
-    class Config:
-        orm_mode = True

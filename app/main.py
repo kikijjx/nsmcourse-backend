@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 from app.routers.theme import theme_router
+from app.routers.course import course_router
+
 
 from starlette.middleware.cors import CORSMiddleware
 
@@ -13,3 +15,5 @@ app.add_middleware(
 )
 
 app.include_router(theme_router)
+app.include_router(course_router)
+

@@ -5,5 +5,7 @@ class CourseCreateUpdate(BaseModel):
     title: str = Field(..., max_length=255)
     description: str
 
-    class Config:
-        orm_mode = True
+class CourseResponse(BaseModel):
+    id: int
+    title: str
+    description: str
