@@ -23,33 +23,13 @@ jobs:
         chmod 600 ~/.ssh/id_rsa
         ssh-keyscan -H $HOST >> ~/.ssh/known_hosts
 
-    - name: Copy project files to remote server
+    - name: Copy project files to remote server and run
       env:
         USER: ${{ secrets.USER }}
         HOST: ${{ secrets.HOST }}
         PROJECT_PATH: ${{ secrets.PROJECT_PATH }}
       run: |
         scp -r ./* $USER@$HOST:$PROJECT_PATH
-
-    - name: Check files on remote server
-      env:
-        USER: ${{ secrets.USER }}
-        HOST: ${{ secrets.HOST }}
-        PROJECT_PATH: ${{ secrets.PROJECT_PATH }}
-      run: |
-        ssh $USER@$HOST << 'EOF'
-          echo "Checking the contents of the project directory..."
-          ls -l $PROJECT_PATH
-          echo "Checking if docker-compose.yml exists..."
-          ls -l $PROJECT_PATH/docker-compose.yml
-        EOF
-
-    - name: Run Docker Compose on remote server
-      env:
-        USER: ${{ secrets.USER }}
-        HOST: ${{ secrets.HOST }}
-        PROJECT_PATH: ${{ secrets.PROJECT_PATH }}
-      run: |
         ssh $USER@$HOST << 'EOF'
           echo "Navigating to the project directory..."
           cd $PROJECT_PATH
@@ -57,3 +37,4 @@ jobs:
           echo "Running Docker Compose..."
           docker-compose up -d
         EOF
+   
