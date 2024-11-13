@@ -39,6 +39,5 @@ jobs:
       run: |
         ssh $USER@$HOST << 'EOF'
           cd $PROJECT_PATH
-          docker-compose pull
           docker-compose up -d
         EOF
