@@ -28,8 +28,10 @@ jobs:
         USER: ${{ secrets.USER }}
         HOST: ${{ secrets.HOST }}
         PROJECT_PATH: ${{ secrets.PROJECT_PATH }}
+        DATABASE_URL: ${{ secrets.DATABASE_URL }}
       run: |
         scp -r ./* $USER@$HOST:$PROJECT_PATH
+        echo "DATABASE_URL=$DATABASE_URL" > $PROJECT_PATH/.env
         
     - name: Run Docker Compose on remote server
       env:
