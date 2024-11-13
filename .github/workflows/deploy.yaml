@@ -1,0 +1,44 @@
+name: Deploy to Remote Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up SSH
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        HOST: ${{ secrets.HOST }}
+      run: |
+        mkdir -p ~/.ssh
+        echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -H $HOST >> ~/.ssh/known_hosts
+
+    - name: Copy project files to remote server
+      env:
+        USER: ${{ secrets.USER }}
+        HOST: ${{ secrets.HOST }}
+        PROJECT_PATH: ${{ secrets.PROJECT_PATH }}
+      run: |
+        scp -r ./* $USER@$HOST:$PROJECT_PATH
+
+    - name: Run Docker Compose on remote server
+      env:
+        USER: ${{ secrets.USER }}
+        HOST: ${{ secrets.HOST }}
+        PROJECT_PATH: ${{ secrets.PROJECT_PATH }}
+      run: |
+        ssh $USER@$HOST << 'EOF'
+          cd $PROJECT_PATH
+          docker-compose pull
+          docker-compose up -d
+        EOF
