@@ -1,4 +1,25 @@
+version: '3.3'
+
 services:
+  db:
+    image: postgres
+    restart: always
+    shm_size: 128mb
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: abubakr
+      POSTGRES_DB: nsmcourse_db
+    networks:
+      - app-network
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - app-network
+
   app:
     build:
       context: .
@@ -9,3 +30,9 @@ services:
       - .env
     volumes:
       - .:/app
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
