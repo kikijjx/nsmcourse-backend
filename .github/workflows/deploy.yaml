@@ -28,16 +28,14 @@ jobs:
         USER: ${{ secrets.USER }}
         HOST: ${{ secrets.HOST }}
         PROJECT_PATH: ${{ secrets.PROJECT_PATH }}
-        DATABASE_URL: ${{ secrets.DATABASE_URL }}
       run: |
         scp -r ./* $USER@$HOST:$PROJECT_PATH
-        touch $PROJECT_PATH/.env
-        echo "DATABASE_URL=$DATABASE_URL" > $PROJECT_PATH/.env
         
     - name: Run Docker Compose on remote server
       env:
         USER: ${{ secrets.USER }}
         HOST: ${{ secrets.HOST }}
         PROJECT_PATH: ${{ secrets.PROJECT_PATH }}
+        DATABASE_URL: ${{ secrets.DATABASE_URL }}
       run: |
-        ssh $USER@$HOST "cd $PROJECT_PATH && docker compose -f docker-compose.yml up --build -d"
+        ssh $USER@$HOST "cd $PROJECT_PATH && touch $PROJECT_PATH/.env && echo "DATABASE_URL=$DATABASE_URL" > $PROJECT_PATH/.env && docker compose -f docker-compose.yml up --build -d"
