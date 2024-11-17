@@ -7,6 +7,7 @@ from app.models.user import User
 from app.models.experiment import Experiment
 from app.schemas.theme import ThemeCreateUpdate, ThemeResponse
 from datetime import datetime
+from app.core.auth import get_current_user, is_admin
 
 theme_router = APIRouter()
 
@@ -19,13 +20,19 @@ def get_themes(db: Session = Depends(get_db)):
 
 
 @theme_router.post("/themes", response_model=ThemeResponse)
-def create_theme(theme: ThemeCreateUpdate, db: Session = Depends(get_db)):
+def create_theme(
+    theme: ThemeCreateUpdate, 
+    db: Session = Depends(get_db), 
+    current_user: User = Depends(get_current_user)
+):
+    is_admin(current_user)
     db_theme = Theme(
         course_id=theme.course_id,
         title=theme.title,
         description=theme.description,
         content=theme.content,
-        updated_at=datetime.utcnow()
+        updated_at=datetime.utcnow(),
+        creator_id=current_user.id
     )
     db.add(db_theme)
     db.commit()
@@ -34,7 +41,13 @@ def create_theme(theme: ThemeCreateUpdate, db: Session = Depends(get_db)):
 
 
 @theme_router.put("/themes/{theme_id}", response_model=ThemeResponse)
-def update_theme(theme_id: int, theme: ThemeCreateUpdate, db: Session = Depends(get_db)):
+def update_theme(
+    theme_id: int, 
+    theme: ThemeCreateUpdate, 
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    is_admin(current_user)
     db_theme = db.query(Theme).filter(Theme.id == theme_id).first()
     if not db_theme:
         raise HTTPException(status_code=404, detail="Theme not found")
@@ -48,8 +61,14 @@ def update_theme(theme_id: int, theme: ThemeCreateUpdate, db: Session = Depends(
     db.refresh(db_theme)
     return db_theme
 
+
 @theme_router.delete("/themes/{theme_id}", response_model=dict)
-def delete_theme(theme_id: int, db: Session = Depends(get_db)):
+def delete_theme(
+    theme_id: int, 
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    is_admin(current_user)
     db_theme = db.query(Theme).filter(Theme.id == theme_id).first()
     if not db_theme:
         raise HTTPException(status_code=404, detail="Theme not found")
